@@ -69,7 +69,7 @@ export function Chatbot({ onDataUpdate }: ChatbotProps) {
         
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: data.message || data.response || "Data updated successfully!",
+          text: data.output || data.message || data.response || "Data updated successfully!",
           isUser: false,
           timestamp: new Date()
         };
