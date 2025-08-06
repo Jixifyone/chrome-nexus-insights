@@ -66,10 +66,27 @@ export function Chatbot({ onDataUpdate }: ChatbotProps) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Webhook response:", data); // Debug log
+        
+        // Extract the actual response text from various possible fields
+        let responseText = "Data updated successfully!";
+        if (typeof data === 'string') {
+          responseText = data;
+        } else if (data.output) {
+          responseText = data.output;
+        } else if (data.message) {
+          responseText = data.message;
+        } else if (data.response) {
+          responseText = data.response;
+        } else if (data.text) {
+          responseText = data.text;
+        } else if (data.result) {
+          responseText = data.result;
+        }
         
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: data.output || data.message || data.response || "Data updated successfully!",
+          text: responseText,
           isUser: false,
           timestamp: new Date()
         };
