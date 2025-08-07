@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, TrendingUp, Users, Camera, Target } from "lucide-react";
+import { RefreshCw, TrendingUp, Users, Camera, Target, Package } from "lucide-react";
 import { MetricCard } from "./dashboard/MetricCard";
 import { ChartCard } from "./dashboard/ChartCard";
 import { Chatbot } from "./dashboard/Chatbot";
-import { RecentProjects } from "./dashboard/RecentProjects";
+import { ProjectsTable } from "./dashboard/ProjectsTable";
 import { RevenueTrendChart } from "./charts/RevenueTrendChart";
 import { ClientRevenueChart } from "./charts/ClientRevenueChart";
 import { ProjectStatusChart } from "./charts/ProjectStatusChart";
@@ -73,7 +73,7 @@ export function Dashboard() {
         </header>
 
         {/* KPI Metrics Grid - Optimized for landscape */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6">
           <MetricCard
             title="Total Revenue"
             value={`₹${data?.totalRevenue.toLocaleString() || "0"}`}
@@ -99,9 +99,17 @@ export function Dashboard() {
             isLoading={isLoading}
           />
           <MetricCard
-            title="Completion Rate"
-            value={`${data?.completionRate || 0}%`}
-            change={data?.completionChange || ""}
+            title="Delivered Projects"
+            value={data?.deliveredProjects.toString() || "0"}
+            change={data?.deliveredChange || ""}
+            changeType="positive"
+            icon={<Package className="w-5 h-5" />}
+            isLoading={isLoading}
+          />
+          <MetricCard
+            title="Avg Revenue per Client"
+            value={`₹${Math.round(data?.avgRevenuePerClient || 0).toLocaleString()}`}
+            change="+15.2% vs last month"
             changeType="positive"
             icon={<Target className="w-5 h-5" />}
             isLoading={isLoading}
@@ -109,9 +117,9 @@ export function Dashboard() {
         </div>
 
         {/* Charts Grid - Perfect for landscape mode like the reference */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 mb-6">
           <ChartCard
-            title="Revenue Trend"
+            title="Cumulative Revenue Growth"
             description="Monthly revenue growth over time"
             isLoading={isLoading}
             className="xl:col-span-1"
@@ -122,7 +130,7 @@ export function Dashboard() {
           </ChartCard>
 
           <ChartCard
-            title="Client Revenue Distribution"
+            title="Revenue by Client"
             description="Revenue breakdown by client"
             isLoading={isLoading}
             className="xl:col-span-1"
@@ -133,8 +141,8 @@ export function Dashboard() {
           </ChartCard>
 
           <ChartCard
-            title="Project Status"
-            description="Current project completion status"
+            title="Project Status Distribution"
+            description="Delivered vs In Progress projects"
             isLoading={isLoading}
             className="xl:col-span-1"
           >
@@ -142,15 +150,17 @@ export function Dashboard() {
               <ProjectStatusChart data={data.projectStatus} />
             )}
           </ChartCard>
+        </div>
 
+        {/* Projects Table */}
+        <div className="mb-6">
           <ChartCard
-            title="Recent Projects"
-            description="Latest project activities and revenue"
+            title="Projects Overview"
+            description="Complete project data with filters and search"
             isLoading={isLoading}
-            className="xl:col-span-1"
           >
-            {data?.recentProjects && (
-              <RecentProjects projects={data.recentProjects} />
+            {data?.projects && (
+              <ProjectsTable projects={data.projects} />
             )}
           </ChartCard>
         </div>
